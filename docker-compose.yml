@@ -1,6 +1,10 @@
 version: "3"
 
 services:
+  summy:
+    image: misobelica/sumy
+    restart: unless-stopped
+
   commafeed:
     image: athou/commafeed:latest
     restart: unless-stopped
