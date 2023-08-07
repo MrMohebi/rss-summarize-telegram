@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  commafeed:
+    image: athou/commafeed:latest
+    restart: unless-stopped
+    environment:
+      - CF_DATABASE_DRIVERCLASS=org.postgresql.Driver
+      - CF_DATABASE_URL=jdbc:postgresql://postgresql:5432/commafeed
+      - CF_DATABASE_USER=commafeed
+      - CF_DATABASE_PASSWORD=commafeed
+      - CF_APP_ALLOWREGISTRATIONS=true
+    volumes:
+      - ./data:/commafeed/data
+    ports:
+      - 8082:8082
+
+  postgresql:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: commafeed
+      POSTGRES_PASSWORD: commafeed
+      POSTGRES_DB: commafeed
+    volumes:
+      - ./db:/var/lib/postgresql/data
