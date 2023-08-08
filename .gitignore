@@ -2,4 +2,4 @@
 /db
 .env
 /.idea
-config.ini
+configs/config.ini
