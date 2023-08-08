@@ -1,6 +1,17 @@
 version: "3"
 
 services:
+  telbot:
+    build: .
+    container_name: rss-summarizer-tel-bot-python
+    restart: unless-stopped
+    environment:
+      - TELEGRAM_PROXY=
+      - TELEGRAM_TOKEN=
+      - COMMA_FEED_API_URL=http://commafeed:8082/rest/
+    volumes:
+      - ./configs:/configs
+
   commafeed:
     image: athou/commafeed:latest
     restart: unless-stopped

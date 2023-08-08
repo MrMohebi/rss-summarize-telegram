@@ -25,7 +25,7 @@ SENTENCES_COUNT = 2
 
 nltk.download('punkt')
 
-COMMA_FEED_URL = "http://127.0.0.1:8082/rest/"
+COMMA_FEED_API_URL = os.getenv('COMMA_FEED_API_URL')
 
 
 class AuthCommaFeed:
@@ -64,7 +64,7 @@ def summer(content: str) -> str:
 
 def get_unread_feeds(auth: AuthCommaFeed) -> list[dict]:
     result = []
-    res = requests.get(COMMA_FEED_URL + "category/entries",
+    res = requests.get(COMMA_FEED_API_URL + "category/entries",
                        params={"readType": "unread", "id": "all"}, auth=auth.to_set())
 
     if res.status_code != 200:
@@ -85,7 +85,7 @@ def get_unread_feeds(auth: AuthCommaFeed) -> list[dict]:
 
 def mark_feed_read(id: int, auth: AuthCommaFeed) -> bool:
     try:
-        res = requests.post(COMMA_FEED_URL + "entry/mark", auth=auth.to_set(),
+        res = requests.post(COMMA_FEED_API_URL + "entry/mark", auth=auth.to_set(),
                             json={"read": True, "id": str(id)})
         return True
     except Exception as e:
@@ -94,7 +94,7 @@ def mark_feed_read(id: int, auth: AuthCommaFeed) -> bool:
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("Please choose:")
+    await update.message.reply_text("First create an account in our CommaFeed(url is available in bot bio), then send ur registered username and password with this command: /set_auth\n\nU'r Done :)")
 
 
 async def set_auth_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -153,7 +153,9 @@ async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 def main() -> None:
     TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
     TELEGRAM_PROXY = os.getenv('TELEGRAM_PROXY')
-    print(TELEGRAM_PROXY)
+    if TELEGRAM_PROXY is not None and len(TELEGRAM_PROXY) < 2:
+        TELEGRAM_PROXY = None
+
     application = Application.builder().token(TELEGRAM_TOKEN).proxy_url(TELEGRAM_PROXY).get_updates_proxy_url(
         TELEGRAM_PROXY).build()
     application.add_handler(CommandHandler("start", start))
