@@ -175,7 +175,7 @@ def save_auth_data_config(id: int, username: str, password: str):
     global config
     try:
         config.get(str(id), "username")
-    except:
+    except configparser.NoSectionError or configparser.NoOptionError:
         config.add_section(str(id))
     config.set(str(id), "username", username)
     config.set(str(id), "password", password)
